@@ -1,8 +1,0 @@
-# Hardware
-RPi.GPIO==0.7.0
-picamera==1.13  # For Raspberry Pi Camera
-opencv-python==4.5.5.64  # Alternative for USB cameras
-
-# Utilities
-pyyaml==6.0
-numpy==1.21.0  # For OpenCV
