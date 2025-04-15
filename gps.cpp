@@ -64,7 +64,7 @@ int gps_init() {
 
     // Continuously read GPS data
   //  while (true) {
-        readGPS(gps_fd);
+        readgps(gps_fd);
         usleep(1000000); // Wait 1 second before reading again
   //  }
 
