@@ -54,7 +54,7 @@ double getDistance() {
     }
 
     // Wait for Echo to go low
-    while (gpio[GPIO_PIN_18 / 10] & (1 << ((GPIO_PIN_18 % 10) * 3)))) {
+    while (gpio[GPIO_PIN_18 / 10] & (1 << ((GPIO_PIN_18 % 10) * 3))) {
         endTime = time(NULL);
     }
 
@@ -66,7 +66,7 @@ double getDistance() {
     return distance;
 }
 
-int main() {
+int ultrasonic_init() {
     setup();
     while (true) {
         double distance = getDistance();
