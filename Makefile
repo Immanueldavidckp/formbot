@@ -1,12 +1,13 @@
-CC ?= gcc
-CFLAGS=-Wall -mconsole
-OBJS = main.o motor.o
+CXX = g++
+CXXFLAGS = `pkg-config --cflags --libs opencv4`
 
-formbot: $(OBJS)
-	$(CC) $(CFLAGS) -o formbot $(OBJS)
+SRC = main.cpp camera.cpp gps.cpp moto.cpp radar.cpp servo.cpp ultrasonic.cpp
+OUT = farmbot
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
+all:
+	$(CXX) $(SRC) $(CXXFLAGS) -o $(OUT)
 
+run:
+	./farmbot
 clean:
-	rm -f *.o formbot
+	rm  farmbot
