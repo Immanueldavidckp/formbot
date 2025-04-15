@@ -57,7 +57,7 @@ void readgps(int uart_fd) {
 
 int gps_init() {
     // Setup GPS UART3
-    int gps_fd = setupGPS();
+    int gps_fd = setupgps();
     if (gps_fd < 0) {
         return -1;
     }

@@ -2,7 +2,7 @@
 #define GPS_HPP
 
 // Sets up UART for GPS (returns file descriptor or -1 on failure)
-int setupGPS();
+int setupgps();
 
 // Reads and processes GPS data from the given UART file descriptor
 void readinit(int uart_fd);
