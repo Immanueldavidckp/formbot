@@ -16,7 +16,7 @@ void stopMotors();
 void setMotorSpeed(int motor, int speed); // motor = 1 for A, 2 for B
 
 //start the function
-int init_motor();
+int motor_init();
 
 
 #endif // MOTO_HPP

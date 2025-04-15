@@ -63,11 +63,11 @@ int gps_init() {
     }
 
     // Continuously read GPS data
-    while (true) {
+  //  while (true) {
         readGPS(gps_fd);
         usleep(1000000); // Wait 1 second before reading again
-    }
+  //  }
 
-    close(gps_fd);  // Close the file descriptor for UART3
+  //  close(gps_fd);  // Close the file descriptor for UART3
     return 0;
 }

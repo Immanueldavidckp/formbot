@@ -69,10 +69,12 @@ double getDistance() {
 
 int ultrasonic_init() {
     setup();
-    while (true) {
-        double distance = getDistance();
-        std::cout << "Distance: " << distance << " cm" << std::endl;
-        usleep(1000000); // Wait 1 second before next measurement
-    }
+  
     return 0;
+}
+void ultrasonic_run(){
+    double distance = getDistance();
+        std::cout << "Distance: " << distance << " cm" << std::endl;
+       // usleep(1000000); // Wait 1 second before next measurement
+    
 }

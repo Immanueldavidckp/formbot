@@ -33,7 +33,10 @@ void closeRadarSensor(int file) {
 }
 
 int radar_init (){
+    int file;
+    file = initRadarSensor();
+    
+    readRadarDistance(file);
 
-    initRadarSensor();
-    readRadarDistance();
+    return 0;
 }

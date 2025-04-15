@@ -43,7 +43,7 @@ int camera_init() {
 
     std::cout << "🎥 YOLOv4-tiny object detection started. Press Ctrl+C to stop.\n";
 
-    while (true) {
+  //  while (true) {
         cv::Mat frame;
         cap >> frame;
         if (frame.empty()) continue;
@@ -83,7 +83,7 @@ int camera_init() {
                 }
             }
         }
-    }
+    //}
 
     return 0;
 }

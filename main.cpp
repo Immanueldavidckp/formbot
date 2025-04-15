@@ -3,9 +3,10 @@
 #include "ultrasonic.hpp"
 #include "camera.hpp"
 #include "gps.hpp"
+#include <ostream>
 
 int main() {
-    std::ocut<<"Starting Farmbot Application"<<std::endl;
+    std::cout<<"Starting Farmbot Application"<<std::endl;
 
     camera_init();
     gps_init();

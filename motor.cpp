@@ -136,12 +136,12 @@ void uTurn() {
     std::cout << "Making a U-turn." << std::endl;
 }
 
-int init_motor() {
+int motor_init() {
     // Setup GPIO pins
     setupMotorPins();
 
     // Test different movements
-    forward();
+  /*  forward();
     sleep(3); // Move forward for 3 seconds
 
     reverse();
@@ -157,8 +157,8 @@ int init_motor() {
     sleep(3); // U-turn for 3 seconds
 
     // Stop the motors after the movements
-    stopMotors();
-    std::cout << "Motors stopped." << std::endl;
+    stopMotors(); */
+    std::cout << "Motors init completed" << std::endl;
 
     return 0;
 }
