@@ -10,4 +10,7 @@ int readRadarDistance(int file);
 // Close the radar sensor
 void closeRadarSensor(int file);
 
+//start the function
+int radar_init ();
+
 #endif

@@ -15,4 +15,8 @@ void stopMotors();
 // Internal functions (optional to expose)
 void setMotorSpeed(int motor, int speed); // motor = 1 for A, 2 for B
 
+//start the function
+int init_motor();
+
+
 #endif // MOTO_HPP

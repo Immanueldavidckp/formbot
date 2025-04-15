@@ -1,3 +1,4 @@
+#include "camera.hpp"
 #include <opencv2/opencv.hpp>
 #include <opencv2/dnn.hpp>
 #include <iostream>
@@ -14,7 +15,7 @@ std::vector<std::string> loadClassNames(const std::string& filePath) {
     return classNames;
 }
 
-int main() {
+int camera_init() {
     const float confThreshold = 0.3;  // Lowered for testing
     const float nmsThreshold = 0.4;
 

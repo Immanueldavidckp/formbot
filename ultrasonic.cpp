@@ -1,3 +1,4 @@
+#include "ultrasonic.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <fcntl.h>

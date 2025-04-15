@@ -10,4 +10,7 @@ void pulseTrigger();
 // Read and return the distance in cm from the ultrasonic sensor
 double getDistance();
 
+// start the function
+int ultrasonic_init();
+
 #endif // ULTRASONIC_HPP

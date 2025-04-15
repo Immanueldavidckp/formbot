@@ -1,3 +1,4 @@
+#include "gps.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <fcntl.h>
@@ -26,7 +27,7 @@ int setupGPS() {
     return uart_fd;
 }
 
-void readGPS(int uart_fd) {
+void readinit(int uart_fd) {
     char buffer[256];
     int n = read(uart_fd, buffer, sizeof(buffer));  // Read data from UART3
     if (n > 0) {
@@ -54,7 +55,7 @@ void readGPS(int uart_fd) {
     }
 }
 
-int main() {
+int gps_init() {
     // Setup GPS UART3
     int gps_fd = setupGPS();
     if (gps_fd < 0) {
