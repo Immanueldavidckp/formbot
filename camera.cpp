@@ -46,7 +46,8 @@ int camera_init() {
   //  while (true) {
         cv::Mat frame;
         cap >> frame;
-        if (frame.empty()) continue;
+   //     if (frame.empty()) continue;
+        
 
         // Create input blob
         cv::Mat blob = cv::dnn::blobFromImage(frame, 1/255.0, cv::Size(416, 416), cv::Scalar(), true, false);

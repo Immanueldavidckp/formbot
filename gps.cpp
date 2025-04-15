@@ -27,7 +27,7 @@ int setupGPS() {
     return uart_fd;
 }
 
-void readinit(int uart_fd) {
+void readgps(int uart_fd) {
     char buffer[256];
     int n = read(uart_fd, buffer, sizeof(buffer));  // Read data from UART3
     if (n > 0) {
