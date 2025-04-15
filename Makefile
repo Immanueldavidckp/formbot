@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = `pkg-config --cflags --libs opencv4`
 
-SRC = main.cpp camera.cpp gps.cpp moto.cpp radar.cpp servo.cpp ultrasonic.cpp
+SRC = main.cpp camera.cpp gps.cpp motor.cpp radar.cpp ultrasonic.cpp
 OUT = farmbot
 
 all:
