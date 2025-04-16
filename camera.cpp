@@ -1,10 +1,7 @@
 #include "camera.hpp"
-#include <opencv2/opencv.hpp>
-#include <opencv2/dnn.hpp>
 #include <iostream>
 #include <fstream>
 
-// Function to load class names from file
 std::vector<std::string> loadClassNames(const std::string& filePath) {
     std::vector<std::string> classNames;
     std::ifstream file(filePath);
@@ -15,76 +12,67 @@ std::vector<std::string> loadClassNames(const std::string& filePath) {
     return classNames;
 }
 
-int camera_init() {
-    const float confThreshold = 0.3;  // Lowered for testing
-    const float nmsThreshold = 0.4;
+int camera_init(CameraContext& ctx) {
+    ctx.confThreshold = 0.3f;
+    ctx.nmsThreshold = 0.4f;
 
-    // Load class names
-    std::vector<std::string> classNames = loadClassNames("coco.names");
+    ctx.classNames = loadClassNames("coco.names");
 
-    // Load YOLOv4-tiny model
-    cv::dnn::Net net = cv::dnn::readNetFromDarknet("yolov4-tiny.cfg", "yolov4-tiny.weights");
-    if (net.empty()) {
+    ctx.net = cv::dnn::readNetFromDarknet("yolov4-tiny.cfg", "yolov4-tiny.weights");
+    if (ctx.net.empty()) {
         std::cerr << "❌ Failed to load YOLOv4-tiny model!" << std::endl;
         return -1;
     }
 
-    net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
-    net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
+    ctx.net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
+    ctx.net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
 
-    // Open camera
-    cv::VideoCapture cap(0, cv::CAP_V4L2);
-    if (!cap.isOpened()) {
+    ctx.cap.open(0, cv::CAP_V4L2);
+    if (!ctx.cap.isOpened()) {
         std::cerr << "❌ Failed to open camera!" << std::endl;
         return -1;
     }
 
-    std::vector<std::string> outputLayerNames = net.getUnconnectedOutLayersNames();
+    ctx.outputLayerNames = ctx.net.getUnconnectedOutLayersNames();
 
-    std::cout << "🎥 YOLOv4-tiny object detection started. Press Ctrl+C to stop.\n";
+    std::cout << "✅ Camera initialized for YOLOv4-tiny object detection.\n";
+    return 0;
+}
 
-  //  while (true) {
-        cv::Mat frame;
-        cap >> frame;
-   //     if (frame.empty()) continue;
-        
+void camera_run(CameraContext& ctx) {
+    cv::Mat frame;
+    ctx.cap >> frame;
 
-        // Create input blob
-        cv::Mat blob = cv::dnn::blobFromImage(frame, 1/255.0, cv::Size(416, 416), cv::Scalar(), true, false);
-        net.setInput(blob);
+    if (frame.empty()) return;
 
-        std::vector<cv::Mat> outputs;
-        net.forward(outputs, outputLayerNames);
+    cv::Mat blob = cv::dnn::blobFromImage(frame, 1/255.0, cv::Size(416, 416), cv::Scalar(), true, false);
+    ctx.net.setInput(blob);
 
-        for (const auto& output : outputs) {
-            for (int i = 0; i < output.rows; ++i) {
-                float confidence = output.at<float>(i, 4);
+    std::vector<cv::Mat> outputs;
+    ctx.net.forward(outputs, ctx.outputLayerNames);
 
-                if (confidence >= confThreshold) {
-                    cv::Mat scores = output.row(i).colRange(5, output.cols);
-                    cv::Point classIdPoint;
-                    double maxClassScore;
-                    cv::minMaxLoc(scores, 0, &maxClassScore, 0, &classIdPoint);
+    for (const auto& output : outputs) {
+        for (int i = 0; i < output.rows; ++i) {
+            float confidence = output.at<float>(i, 4);
+            if (confidence >= ctx.confThreshold) {
+                cv::Mat scores = output.row(i).colRange(5, output.cols);
+                cv::Point classIdPoint;
+                double maxClassScore;
+                cv::minMaxLoc(scores, 0, &maxClassScore, 0, &classIdPoint);
 
-                    if (maxClassScore > confThreshold) {
-                        int centerX = static_cast<int>(output.at<float>(i, 0) * frame.cols);
-                        int centerY = static_cast<int>(output.at<float>(i, 1) * frame.rows);
-                        int width = static_cast<int>(output.at<float>(i, 2) * frame.cols);
-                        int height = static_cast<int>(output.at<float>(i, 3) * frame.rows);
-                        int classId = classIdPoint.x;
+                if (maxClassScore > ctx.confThreshold) {
+                    int centerX = static_cast<int>(output.at<float>(i, 0) * frame.cols);
+                    int centerY = static_cast<int>(output.at<float>(i, 1) * frame.rows);
+                    int width   = static_cast<int>(output.at<float>(i, 2) * frame.cols);
+                    int height  = static_cast<int>(output.at<float>(i, 3) * frame.rows);
+                    int classId = classIdPoint.x;
 
-                        std::string label = (classId < classNames.size()) ? classNames[classId] : "Unknown";
-                        std::cout << "✅ Detected: " << label
-                                  << " | Size: " << width << "x" << height
-                                  << " | Confidence: " << (maxClassScore * 100) << "%" << std::endl;
-                    }
-                } else {
-                    // If confidence is below threshold, print this
-                    std::cout << "❌ Low Confidence Detected Object (Below " << confThreshold * 100 << "% confidence)\n";
+                    std::string label = (classId < ctx.classNames.size()) ? ctx.classNames[classId] : "Unknown";
+                    std::cout << "✅ Detected: " << label
+                              << " | Size: " << width << "x" << height
+                              << " | Confidence: " << (maxClassScore * 100) << "%" << std::endl;
                 }
             }
         }
-    //}
-
-    return 0;
+    }
 }

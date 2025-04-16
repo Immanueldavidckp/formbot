@@ -1,13 +1,21 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include <string>
+#include <opencv2/opencv.hpp>
+#include <opencv2/dnn.hpp>
 #include <vector>
+#include <string>
 
-// Function to load class names from a given file path
-std::vector<std::string> loadClassNames(const std::string& filePath);
+struct CameraContext {
+    cv::dnn::Net net;
+    std::vector<std::string> classNames;
+    std::vector<std::string> outputLayerNames;
+    cv::VideoCapture cap;
+    float confThreshold;
+    float nmsThreshold;
+};
 
-// Function to initialize the camera and run YOLOv4-tiny object detection
-int camera_init();
+int camera_init(CameraContext& ctx);
+void camera_run(CameraContext& ctx);
 
-#endif // CAMERA_HPP
+#endif

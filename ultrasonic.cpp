@@ -70,6 +70,7 @@ double getDistance() {
 
 int ultrasonic_init() {
     setup();
+    std::cout<<"ultrasonic_init done" <<std::endl;
     return 0;
 }
 
