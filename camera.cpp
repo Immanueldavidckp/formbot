@@ -68,12 +68,14 @@ int camera_run() {
         std::cout<<"entered 1st forloop"<<std::endl;
         for (int i = 0; i < output.rows; ++i) {
             float confidence = output.at<float>(i, 4);
+            std::cout<<"confidence"<<confidence<<std::endl;
             
             if (confidence >= confThreshold) {
                 cv::Mat scores = output.row(i).colRange(5, output.cols);
                 cv::Point classIdPoint;
                 double maxClassScore;
                 cv::minMaxLoc(scores, 0, &maxClassScore, 0, &classIdPoint);
+                std::cout<<"maxckassScore"<<maxckassScore<<std::endl;
 
                 if (maxClassScore > confThreshold) {
                     int centerX = static_cast<int>(output.at<float>(i, 0) * frame.cols);
