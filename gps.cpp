@@ -8,7 +8,7 @@
 
 #define GPS_UART "/dev/serial1"  // UART3 corresponds to /dev/serial1
 
-int setupGPS() {
+int setupgps() {
     // Open the UART3 device
     int uart_fd = open(GPS_UART, O_RDWR | O_NOCTTY | O_SYNC);
     if (uart_fd < 0) {
