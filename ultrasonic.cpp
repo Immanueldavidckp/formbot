@@ -20,7 +20,7 @@ void setup() {
         exit(1);
     }
 
-    gpio_ultrasonic = (volatile unsigned *)mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, mem, GPIO_ULRASONIC_BASE);
+    gpio_ultrasonic = (volatile unsigned *)mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, mem, GPIO_ULTRASONIC_BASE);
     if (gpio_ultrasonic == MAP_FAILED) {
         std::cerr << "Error: Memory mapping failed!" << std::endl;
         exit(1);
