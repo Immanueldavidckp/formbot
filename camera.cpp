@@ -75,7 +75,7 @@ int camera_run() {
                 cv::Point classIdPoint;
                 double maxClassScore;
                 cv::minMaxLoc(scores, 0, &maxClassScore, 0, &classIdPoint);
-                std::cout<<"maxckassScore"<<maxckassScore<<std::endl;
+                std::cout<<"maxckassScore"<<maxClassScore<<std::endl;
 
                 if (maxClassScore > confThreshold) {
                     int centerX = static_cast<int>(output.at<float>(i, 0) * frame.cols);
