@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <cstring>
 
-#define GPS_UART "/dev/serial1"  // UART3 corresponds to /dev/serial1
+#define GPS_UART "/dev/ttyAMA4"  // UART4 corresponds to /dev/serial1
 
 int setupgps() {
     int uart_fd = open(GPS_UART, O_RDWR | O_NOCTTY | O_SYNC);
@@ -27,6 +27,7 @@ int setupgps() {
 
 int gps_init() {
     return setupgps();  // Just return the uart_fd
+    std::cout<<"gpsinit done"<<std::endl;
 }
 
 void gps_run(int uart_fd) {
