@@ -5,7 +5,7 @@
 int setupgps();
 
 // Reads and processes GPS data from the given UART file descriptor
-void readinit(int uart_fd);
+void gps_run(int uart_fd);
 
 // Initializes the GPS module and starts continuous reading
 int gps_init();
