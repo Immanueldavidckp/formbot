@@ -15,5 +15,13 @@ int main() {
     motor_init();
     camera_init();
 
+    while(true){
+
+        gps_run(int uart_fd);
+        ultrasonic_run();
+        camera_run();
+
+    }
+
     return 0;
 }
