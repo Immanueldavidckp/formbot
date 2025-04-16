@@ -70,7 +70,7 @@ int camera_run() {
             float confidence = output.at<float>(i, 4);
             std::cout<<"confidence"<<confidence<<std::endl;
             
-            if (confidence >= confThreshold) {
+         //   if (confidence >= confThreshold) {
                 cv::Mat scores = output.row(i).colRange(5, output.cols);
                 cv::Point classIdPoint;
                 double maxClassScore;
@@ -89,10 +89,13 @@ int camera_run() {
                               << " | Size: " << width << "x" << height
                               << " | Confidence: " << (maxClassScore * 100) << "%" << std::endl;
                 }
+                else{
+                    std::cout<<"low confidence value"<<std::endl;
+                }
             
-            }else{
-                std::cout<<"low confidence value"<<std::endl;
-            }
+         /*   }else{
+                std::cout<<"low maxClassScore value"<<std::endl;
+            }*/
         }
     }
 
