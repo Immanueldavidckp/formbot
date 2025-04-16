@@ -9,17 +9,17 @@
 int main() {
     std::cout<<"Starting Farmbot Application"<<std::endl;
 
-    int uart_fd = gps_init(); 
+    int uart_data = gps_init(); 
 
     
-    gps_init();
+  //  gps_init();
     ultrasonic_init();
     motor_init();
     camera_init();
 
     while(true){
 
-        gps_run(uart_fd);
+        gps_run(uart_data);
         ultrasonic_run();
         camera_run();
 
