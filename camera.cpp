@@ -77,7 +77,7 @@ int camera_run() {
                 cv::minMaxLoc(scores, 0, &maxClassScore, 0, &classIdPoint);
                 std::cout<<"maxckassScore"<<maxClassScore<<std::endl;
 
-                if (maxClassScore > confThreshold) {
+            //    if (maxClassScore > confThreshold) {
                     int centerX = static_cast<int>(output.at<float>(i, 0) * frame.cols);
                     int centerY = static_cast<int>(output.at<float>(i, 1) * frame.rows);
                     int width = static_cast<int>(output.at<float>(i, 2) * frame.cols);
@@ -88,12 +88,12 @@ int camera_run() {
                     std::cout << "✅ Detected: " << label
                               << " | Size: " << width << "x" << height
                               << " | Confidence: " << (maxClassScore * 100) << "%" << std::endl;
-                }
+             /*   }
                 else{
                     std::cout<<"low confidence value"<<std::endl;
                 }
             
-         /*   }else{
+            }else{
                 std::cout<<"low maxClassScore value"<<std::endl;
             }*/
         }
