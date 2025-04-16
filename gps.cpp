@@ -21,13 +21,13 @@ int setupgps() {
     cfsetospeed(&options, B9600);
     options.c_cflag |= (CLOCAL | CREAD);
     tcsetattr(uart_fd, TCSANOW, &options);
-
+    std::cout<<"gpsinit done"<<std::endl;
     return uart_fd;
 }
 
 int gps_init() {
     return setupgps();  // Just return the uart_fd
-    std::cout<<"gpsinit done"<<std::endl;
+   
 }
 
 void gps_run(int uart_fd) {
