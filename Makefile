@@ -8,7 +8,7 @@ all:
 	$(CXX) $(SRC) $(CXXFLAGS) -o $(OUT)
 
 run:
-	./farmbot
+	sudo ./farmbot
 clean:
 	rm  farmbot
 
@@ -20,5 +20,5 @@ git:
 
 pull:
 	git pull origin main
-	
+
 	

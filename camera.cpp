@@ -58,14 +58,14 @@ int camera_run() {
     if (frame.empty()) return -1;
 
     // Create input blob
-    cv::Mat blob = cv::dnn::blobFromImage(frame, 1/255.0, cv::Size(416, 416), cv::Scalar(), true, false);
+    cv::Mat blob = cv::dnn::blobFromImage(frame, 1.0/255.0, cv::Size(960, 544), cv::Scalar(), true, false);
     net.setInput(blob);
 
     std::vector<cv::Mat> outputs;
     net.forward(outputs, net.getUnconnectedOutLayersNames());
 
     for (const auto& output : outputs) {
-        std::cout<<"entered 1st forloop"<<std::endl;
+      //  std::cout<<"entered 1st forloop"<<std::endl;
         for (int i = 0; i < output.rows; ++i) {
             float confidence = output.at<float>(i, 4);
             std::cout<<"confidence"<<confidence<<std::endl;
@@ -91,7 +91,7 @@ int camera_run() {
                 }
             
             }else{
-                std::cout<<"if condtion not running"<<std::endl;
+                std::cout<<"low confidence value"<<std::endl;
             }
         }
     }
