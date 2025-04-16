@@ -5,12 +5,13 @@
 #include <sys/mman.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>  // For time()
 
-#define GPIO_BASE 0x3F200000  // Base address for GPIO registers
+#define GPIO_ULTRASONIC_BASE 0x3F200000  // Base address for GPIO registers (Raspberry Pi 3)
 #define GPIO_PIN_17 17        // GPIO 17 for Trigger
 #define GPIO_PIN_18 18        // GPIO 18 for Echo
 
-volatile unsigned *gpio;
+volatile unsigned *gpio_ultrasonic;
 
 void setup() {
     int mem = open("/dev/mem", O_RDWR | O_SYNC);
@@ -19,28 +20,28 @@ void setup() {
         exit(1);
     }
 
-    gpio = (volatile unsigned *)mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, mem, GPIO_BASE);
-    if (gpio == MAP_FAILED) {
+    gpio_ultrasonic = (volatile unsigned *)mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, mem, GPIO_ULRASONIC_BASE);
+    if (gpio_ultrasonic == MAP_FAILED) {
         std::cerr << "Error: Memory mapping failed!" << std::endl;
         exit(1);
     }
     close(mem);
 
     // Set GPIO Pin 17 (Trigger) as output
-    gpio[GPIO_PIN_17 / 10] |= (1 << ((GPIO_PIN_17 % 10) * 3));
+    gpio_ultrasonic[GPIO_PIN_17 / 10] |= (1 << ((GPIO_PIN_17 % 10) * 3));
 
     // Set GPIO Pin 18 (Echo) as input
-    gpio[GPIO_PIN_18 / 10] &= ~(7 << ((GPIO_PIN_18 % 10) * 3));
+    gpio_ultrasonic[GPIO_PIN_18 / 10] &= ~(7 << ((GPIO_PIN_18 % 10) * 3));
 }
 
 void pulseTrigger() {
     // Set Trigger High
-    gpio[GPIO_PIN_17 / 10] |= (1 << ((GPIO_PIN_17 % 10) * 3));
+    gpio_ultrasonic[GPIO_PIN_17 / 10] |= (1 << ((GPIO_PIN_17 % 10) * 3));
 
     usleep(10); // 10 microseconds
 
     // Set Trigger Low
-    gpio[GPIO_PIN_17 / 10] &= ~(1 << ((GPIO_PIN_17 % 10) * 3));
+    gpio_ultrasonic[GPIO_PIN_17 / 10] &= ~(1 << ((GPIO_PIN_17 % 10) * 3));
 }
 
 double getDistance() {
@@ -50,12 +51,12 @@ double getDistance() {
     pulseTrigger();
 
     // Wait for Echo to go high
-    while (!(gpio[GPIO_PIN_18 / 10] & (1 << ((GPIO_PIN_18 % 10) * 3)))) {
+    while (!(gpio_ultrasonic[GPIO_PIN_18 / 10] & (1 << ((GPIO_PIN_18 % 10) * 3)))) {
         startTime = time(NULL);
     }
 
     // Wait for Echo to go low
-    while (gpio[GPIO_PIN_18 / 10] & (1 << ((GPIO_PIN_18 % 10) * 3))) {
+    while (gpio_ultrasonic[GPIO_PIN_18 / 10] & (1 << ((GPIO_PIN_18 % 10) * 3))) {
         endTime = time(NULL);
     }
 
@@ -69,12 +70,10 @@ double getDistance() {
 
 int ultrasonic_init() {
     setup();
-  
     return 0;
 }
-void ultrasonic_run(){
+
+void ultrasonic_run() {
     double distance = getDistance();
-        std::cout << "Distance: " << distance << " cm" << std::endl;
-       // usleep(1000000); // Wait 1 second before next measurement
-    
+    std::cout << "Distance: " << distance << " cm" << std::endl;
 }
