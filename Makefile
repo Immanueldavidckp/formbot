@@ -11,3 +11,10 @@ run:
 	./farmbot
 clean:
 	rm  farmbot
+
+git:
+	git status
+	git add .
+	git commit -m "new change"
+	git push origin main
+	
