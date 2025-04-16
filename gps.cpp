@@ -38,19 +38,19 @@ void gps_run(int uart_fd) {
         buffer[n] = '\0';
         std::cout << "GPS Data: " << buffer << std::endl;
 
-        if (strstr(buffer, "$GPGGA") != NULL) {
-            char lat[15], lon[15], alt[15];
-            float latitude, longitude, altitude;
+        if (strstr(buffer, "$GPRMC")) {
+            char time[11], status, lat[15], lat_dir, lon[15], lon_dir, date[7];
+            sscanf(buffer, "$GPRMC,%10[^,],%c,%[^,],%c,%[^,],%c,%*[^,],%*[^,],%6[^,]",
+                   time, &status, lat, &lat_dir, lon, &lon_dir, date);
 
-            sscanf(buffer, "$GPGGA,%*f,%[^,],%*c,%[^,],%*c,%*d,%*d,%*f,%[^,]", lat, lon, alt);
+            float latitude = atof(lat);
+            float longitude = atof(lon);
 
-            latitude = atof(lat);
-            longitude = atof(lon);
-            altitude = atof(alt);
-
-            std::cout << "Latitude: " << latitude
-                      << ", Longitude: " << longitude
-                      << ", Altitude: " << altitude << " meters" << std::endl;
+            std::cout << "Time: " << time
+                      << " | Status: " << status
+                      << " | Latitude: " << latitude << " " << lat_dir
+                      << " | Longitude: " << longitude << " " << lon_dir
+                      << " | Date: " << date << std::endl;
         }
     }
 }

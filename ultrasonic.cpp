@@ -17,7 +17,7 @@
 #define TRIG 17
 #define ECHO 18
 
-volatile unsigned *gpio_ultrasonic;  // Global, shared across the project
+volatile unsigned *gpio_ultrasonic;
 
 void set_output(int pin) {
     gpio_ultrasonic[GPFSEL0 + pin / 10] &= ~(7 << ((pin % 10) * 3));
@@ -52,10 +52,30 @@ double getDistance() {
 
     pulseTrigger();
 
-    while (read_pin(ECHO) == 0)
-        clock_gettime(CLOCK_MONOTONIC, &start);
-    while (read_pin(ECHO) == 1)
-        clock_gettime(CLOCK_MONOTONIC, &end);
+    // Wait for ECHO HIGH with timeout
+    struct timespec timeout_start;
+    clock_gettime(CLOCK_MONOTONIC, &timeout_start);
+    while (read_pin(ECHO) == 0) {
+        struct timespec now;
+        clock_gettime(CLOCK_MONOTONIC, &now);
+        if ((now.tv_sec - timeout_start.tv_sec) * 1000 +
+            (now.tv_nsec - timeout_start.tv_nsec) / 1e6 > 200) {
+            return -1;
+        }
+    }
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    // Wait for ECHO LOW with timeout
+    clock_gettime(CLOCK_MONOTONIC, &timeout_start);
+    while (read_pin(ECHO) == 1) {
+        struct timespec now;
+        clock_gettime(CLOCK_MONOTONIC, &now);
+        if ((now.tv_sec - timeout_start.tv_sec) * 1000 +
+            (now.tv_nsec - timeout_start.tv_nsec) / 1e6 > 200) {
+            return -1;
+        }
+    }
+    clock_gettime(CLOCK_MONOTONIC, &end);
 
     double duration = (end.tv_sec - start.tv_sec) * 1e6 +
                       (end.tv_nsec - start.tv_nsec) / 1e3;
@@ -90,5 +110,8 @@ int ultrasonic_init() {
 void ultrasonic_run() {
     std::cout << "entered Ultrasonic_run" << std::endl;
     double distance = getDistance();
-    std::cout << "Distance: " << distance << " cm" << std::endl;
+    if (distance >= 0)
+        std::cout << "Distance: " << distance << " cm" << std::endl;
+    else
+        std::cout << "Distance measurement failed." << std::endl;
 }
