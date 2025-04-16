@@ -48,6 +48,7 @@ int camera_init() {
 }
 
 int camera_run() {
+    std::cout<<"entered camera_run"<<std::endl;
     const float confThreshold = 0.3;
     const float nmsThreshold = 0.4;
 
@@ -64,9 +65,10 @@ int camera_run() {
     net.forward(outputs, net.getUnconnectedOutLayersNames());
 
     for (const auto& output : outputs) {
+        std::cout<<"entered 1st forloop"<<std::endl;
         for (int i = 0; i < output.rows; ++i) {
             float confidence = output.at<float>(i, 4);
-
+            
             if (confidence >= confThreshold) {
                 cv::Mat scores = output.row(i).colRange(5, output.cols);
                 cv::Point classIdPoint;
@@ -85,6 +87,9 @@ int camera_run() {
                               << " | Size: " << width << "x" << height
                               << " | Confidence: " << (maxClassScore * 100) << "%" << std::endl;
                 }
+            
+            }else{
+                std::cout<<"if condtion not running"<<std::endl;
             }
         }
     }
