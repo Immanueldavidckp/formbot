@@ -3,78 +3,92 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <time.h>  // For time()
+#include <time.h>
 
-#define GPIO_ULTRASONIC_BASE 0x3F200000  // Base address for GPIO registers (Raspberry Pi 3)
-#define GPIO_PIN_17 17        // GPIO 17 for Trigger
-#define GPIO_PIN_18 18        // GPIO 18 for Echo
+#define GPIO_ULTRASONIC_BASE 0x3F200000
+#define BLOCK_SIZE 4096
 
-volatile unsigned *gpio_ultrasonic;
+#define GPFSEL0 0
+#define GPSET0 7
+#define GPCLR0 10
+#define GPLEV0 13
 
-void setup() {
-    int mem = open("/dev/mem", O_RDWR | O_SYNC);
-    if (mem < 0) {
-        std::cerr << "Error: Unable to open /dev/mem!" << std::endl;
-        exit(1);
-    }
+#define TRIG 17
+#define ECHO 18
 
-    gpio_ultrasonic = (volatile unsigned *)mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, mem, GPIO_ULTRASONIC_BASE);
-    if (gpio_ultrasonic == MAP_FAILED) {
-        std::cerr << "Error: Memory mapping failed!" << std::endl;
-        exit(1);
-    }
-    close(mem);
+volatile unsigned *gpio_ultrasonic;  // Global, shared across the project
 
-    // Set GPIO Pin 17 (Trigger) as output
-    gpio_ultrasonic[GPIO_PIN_17 / 10] |= (1 << ((GPIO_PIN_17 % 10) * 3));
+void set_output(int pin) {
+    gpio_ultrasonic[GPFSEL0 + pin / 10] &= ~(7 << ((pin % 10) * 3));
+    gpio_ultrasonic[GPFSEL0 + pin / 10] |= (1 << ((pin % 10) * 3));
+}
 
-    // Set GPIO Pin 18 (Echo) as input
-    gpio_ultrasonic[GPIO_PIN_18 / 10] &= ~(7 << ((GPIO_PIN_18 % 10) * 3));
+void set_input(int pin) {
+    gpio_ultrasonic[GPFSEL0 + pin / 10] &= ~(7 << ((pin % 10) * 3));
+}
+
+void write_pin(int pin, int val) {
+    if (val)
+        gpio_ultrasonic[GPSET0] = (1 << pin);
+    else
+        gpio_ultrasonic[GPCLR0] = (1 << pin);
+}
+
+int read_pin(int pin) {
+    return (gpio_ultrasonic[GPLEV0] & (1 << pin)) ? 1 : 0;
 }
 
 void pulseTrigger() {
-    // Set Trigger High
-    gpio_ultrasonic[GPIO_PIN_17 / 10] |= (1 << ((GPIO_PIN_17 % 10) * 3));
-
-    usleep(10); // 10 microseconds
-
-    // Set Trigger Low
-    gpio_ultrasonic[GPIO_PIN_17 / 10] &= ~(1 << ((GPIO_PIN_17 % 10) * 3));
+    write_pin(TRIG, 0);
+    usleep(2);
+    write_pin(TRIG, 1);
+    usleep(10);
+    write_pin(TRIG, 0);
 }
 
 double getDistance() {
-    long startTime = 0, endTime = 0;
+    struct timespec start, end;
 
-    // Send pulse to trigger
     pulseTrigger();
 
-    // Wait for Echo to go high
-    while (!(gpio_ultrasonic[GPIO_PIN_18 / 10] & (1 << ((GPIO_PIN_18 % 10) * 3)))) {
-        startTime = time(NULL);
-    }
+    while (read_pin(ECHO) == 0)
+        clock_gettime(CLOCK_MONOTONIC, &start);
+    while (read_pin(ECHO) == 1)
+        clock_gettime(CLOCK_MONOTONIC, &end);
 
-    // Wait for Echo to go low
-    while (gpio_ultrasonic[GPIO_PIN_18 / 10] & (1 << ((GPIO_PIN_18 % 10) * 3))) {
-        endTime = time(NULL);
-    }
+    double duration = (end.tv_sec - start.tv_sec) * 1e6 +
+                      (end.tv_nsec - start.tv_nsec) / 1e3;
 
-    // Calculate duration
-    double pulseDuration = endTime - startTime;
-
-    // Calculate distance (in cm)
-    double distance = pulseDuration * 17150;
+    double distance = (duration * 0.0343) / 2;
     return distance;
 }
 
 int ultrasonic_init() {
-    setup();
-    std::cout<<"ultrasonic_init done" <<std::endl;
+    int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
+    if (mem_fd < 0) {
+        std::cerr << "Error opening /dev/mem!" << std::endl;
+        exit(1);
+    }
+
+    gpio_ultrasonic = (volatile unsigned *)mmap(NULL, BLOCK_SIZE, PROT_READ | PROT_WRITE,
+                                                MAP_SHARED, mem_fd, GPIO_ULTRASONIC_BASE);
+    if (gpio_ultrasonic == MAP_FAILED) {
+        std::cerr << "Memory mapping failed!" << std::endl;
+        exit(1);
+    }
+
+    close(mem_fd);
+
+    set_output(TRIG);
+    set_input(ECHO);
+
+    std::cout << "Ultrasonic initialized using gpio_ultrasonic" << std::endl;
     return 0;
 }
 
 void ultrasonic_run() {
+    std::cout << "entered Ultrasonic_run" << std::endl;
     double distance = getDistance();
     std::cout << "Distance: " << distance << " cm" << std::endl;
 }
