@@ -11,7 +11,7 @@
 int setupgps() {
     int uart_fd = open(GPS_UART, O_RDWR | O_NOCTTY | O_SYNC);
     if (uart_fd < 0) {
-        std::cerr << "Error opening UART3!" << std::endl;
+        std::cerr << "Error opening UART4!" << std::endl;
         return -1;
     }
 
