@@ -22,9 +22,9 @@ int main() {
 
         
       radar_run();
-      gps_run(uart_data);
+    //  gps_run(uart_data);
 
-        ultrasonic_run();
+    //    ultrasonic_run();
       //  camera_run();
 
     }
