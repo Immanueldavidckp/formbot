@@ -5,7 +5,7 @@ SRC = main.cpp  gps.cpp motor.cpp radar.cpp ultrasonic.cpp
 OUT = farmbot
 
 all:
-	$(CXX) $(SRC) $(CXXFLAGS) -o $(OUT)
+	$(CXX) $(SRC)  -o $(OUT)
 
 run:
 	sudo ./farmbot
