@@ -36,10 +36,10 @@ int radar_run() {
 
     std::cout<<"values"<<radar_fd<<std::endl;
 
-    /*if (write(radar_fd, buf, 1) != 1) {
+    if (write(radar_fd, buf, 1) != 1) {
         std::cerr << "❌ Radar write error\n";
         return -1;
-    }*/
+    }
 
     if (read(radar_fd, buf, 2) != 2) {
         std::cerr << "❌ Radar read error\n";
