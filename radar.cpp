@@ -5,7 +5,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 
-#define RADAR_I2C_ADDRESS 0x68
+#define RADAR_I2C_ADDRESS 0x29
 #define DISTANCE_REGISTER 0x00
 
 static int radar_fd = -1;  // File descriptor (static for internal use)
