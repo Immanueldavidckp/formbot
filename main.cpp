@@ -15,13 +15,17 @@ int main() {
   //  gps_init();
     ultrasonic_init();
     motor_init();
-    camera_init();
+    radar_init();
+    //camera_init();
 
     while(true){
 
-        gps_run(uart_data);
+        
+      radar_run();
+      gps_run(uart_data);
+
         ultrasonic_run();
-        camera_run();
+      //  camera_run();
 
     }
 
