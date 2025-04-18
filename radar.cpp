@@ -34,6 +34,8 @@ int radar_run() {
 
     char buf[2] = {DISTANCE_REGISTER};
 
+    std::cout<<buf[0]<<std::endl;
+
     if (write(radar_fd, buf, 1) != 1) {
         std::cerr << "❌ Radar write error\n";
         return -1;
