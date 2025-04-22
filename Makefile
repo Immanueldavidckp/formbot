@@ -16,7 +16,7 @@ git:
 	git status
 	git add .
 	git commit -m "new change"
-	git push origin main
+	git push origin master
 
 pull:
 	git pull origin main

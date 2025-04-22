@@ -1,0 +1,7 @@
+whisper
+sounddevice
+pyttsx3
+scikit-learn
+numpy
+pandas
+torch
