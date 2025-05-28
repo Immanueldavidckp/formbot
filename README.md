@@ -8,11 +8,7 @@ FormBot is an autonomous farming robot designed to navigate, identify plants, an
 - Servo-controlled camera angle
 - Integration with sensors (e.g., GPS, IMU, VL53L1X)
 
-## How to Run
-```bash
-python3 main.py
-
- ## Directory Structure
+-  ## Directory Structure
 formbot/
 ├── main.py           # Entry point
 ├── camera.py         # Handles camera processing
@@ -22,5 +18,11 @@ formbot/
 
 ## Future Plans
 Add voice command control
+
+## How to Run
+```bash
+python3 main.py
+
+
 
 Enhance obstacle avoidance
